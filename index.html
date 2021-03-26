@@ -1,0 +1,92 @@
+<html>
+<head>
+	<title>ArtCompressor 0.1</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://cdn.underdevelopment.work/bulma/css/bulma.min.css">
+	<link rel="stylesheet" href="https://cdn.underdevelopment.work/dropzonejs/dist/min/dropzone.min.css">
+</head>
+<body>
+	<nav class="navbar" role="navigation" aria-label="main navigation">
+	  <div class="navbar-brand">
+		<a class="navbar-item" href="index.html">
+		  ArtCompressor 0.1
+		</a>
+
+		<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+		  <span aria-hidden="true"></span>
+		  <span aria-hidden="true"></span>
+		  <span aria-hidden="true"></span>
+		</a>
+	  </div>
+	  <div id="navbarBasicExample" class="navbar-menu">
+		<div class="navbar-start">
+		  <a class="navbar-item" href="index.html">
+		    Home
+		  </a>
+		</div>
+	  </div>
+	</nav>
+<section class="hero is-medium is-info">
+  <div class="hero-body">
+    <p class="title has-text-centered">
+      ArtCompressor
+    </p>
+    <p id="subtanim" class="subtitle has-text-centered">
+
+    </p>
+  </div>
+</section>
+	<section class="section is-full">
+		<h1 class="title has-text-centered">Upload images and compress it:</h1>
+		<h2 class="subtitle has-text-centered">
+			Drag and drop files below:
+		</h2>
+		<form action="http://localhost:3000/subirarchivo" class="dropzone" id="my-awesome-dropzone" enctype="multipart/form-data">
+			<div class="fallback">
+				<input name="fileimages" type="file" multiple />
+			</div>
+		</form>
+	<div class="table-container is-medium is-centered">
+		<table id="filetable" name="filetable" class="table is-fullwidth is-centered">
+		  <thead>
+			<tr>
+			  <th class="has-text-centered">File</th>
+			  <th class="has-text-centered">Before</th>
+			  <th class="has-text-centered">After</th>
+			  <th class="has-text-centered">Status</th>
+			  <th class="has-text-centered">Download</th>
+			</tr>
+		  </thead>
+		  <tbody id="cuerpotabla"></tbody>
+		</table>
+	</div>
+	<section class="section">
+		<input name="eraselistbtn" id="eraselistbtn" class="button is-danger" type="reset" value="Erase List">
+		<input name="downloadzipbtn" id="downloadzipbtn" class="button is-info" type="reset" value="Download ZIP">
+	</section>
+	<div id="cookiescns" class="notification is-primary">
+	  <button id="closecnsbtn" class="delete"></button>
+		<h1 class="has-text-centered"><strong>We use cookies</strong></h1>
+		<br><p class="has-text-centered">
+		We use cookies and other tracking technologies to improve your browsing experience on our website, to show you personalized content and targeted ads, to analyze our website traffic, and to understand where our visitors are coming from. </p>
+		<div class="section has-text-centered">
+		  <button id="agreebtn" class="button is-success">I Agree</button>
+		</div>
+	</div>
+
+	<footer class="footer">
+	  <div class="content has-text-centered">
+		<p>
+		  <strong>ArtCompressor 0.1</strong> by <a href="https://jgthms.com">Arturo Vásquez</a>. The source code is licensed
+		  <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+		  is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+		</p>
+	  </div>
+	</footer>
+		<script src="https://cdn.underdevelopment.work/dropzonejs/dist/min/dropzone.min.js"></script>
+		<script src="https://cdn.underdevelopment.work/axios/axios.min.js"></script>
+		<script src="https://cdn.underdevelopment.work/typedjs/typed.js@2.0.11.js"></script>
+		<script src="https://cdn.underdevelopment.work/generaljs/general.min.js"></script>
+		<script src="js/app.js"></script>
+</body>
+</html>
