@@ -1,6 +1,6 @@
 const Jimp = require('jimp');
 var Zip = require("adm-zip");
-var uuidv4 = require("uuid/v4");
+var uuidv4 = require("uuidv4");
 const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminMozjpeg = require('imagemin-mozjpeg');
@@ -13,16 +13,23 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const _ = require('lodash');
 const fs=require("fs");
+const fa=require("fs");
 const filepath = "../PATH/TO/IMAGE.PNG";
 const tempPath = "../PATH/TO/IMAGE_AFTER_JIMP_RESIZE.PNG";
 const outputPath = "uploadsrezised";
 const JIMP_QUALITY = 70;
 const RESIZE_WIDTH = 600; //px
-const cookieParser = require('cookie-parser')
 const app=express();
 let sess;
-
-app.use(cookieParser());
+/******FUNCTIONS*****/
+function wait (timeout) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, timeout);
+  });
+}
+/******FIN FUNCTIONS*****/
 // enable files upload
 app.use(fileUpload({
     createParentPath: true
@@ -52,7 +59,6 @@ app.post("/subirarchivo", function(req, res) {
         }
 		else {
 		    let fileone = req.files.file;
-			console.log(fileone);
 		    fileone.mv('./uploads/' + fileone.name);
 			let rootorigin = './uploads/' + fileone.name;
 			let rootdest = './uploadsresized/';
@@ -73,7 +79,7 @@ app.post("/subirarchivo", function(req, res) {
 				const files = imagemin([rootorigin], {
 					destination: rootdest,
 					plugins: [
-					  imageminMozjpeg({strip: true},{quality: 50 })
+					  imageminJpegtran({progressive: true})
 					]
 				});
 			}
@@ -129,18 +135,17 @@ app.get("/getresized/:file/", function(req, res) {
 		numberf1=numbersize1;
 	}
 	ruta2='./uploads/' + nombre;
-	if(fs.existsSync(ruta2)){
-		stats2 = fs.statSync(ruta2);
+	if(fa.existsSync(ruta2)){
+		stats2 = fa.statSync(ruta2);
 		numbersize2=stats2.size;
 		numberf2=numbersize2;
 	}
-
-	result=parseFloat(numberf1/numberf2);
+	result=parseFloat(numberf2/numberf1);
 
 	data=[{
 		nombre:req.params.file,
-		pesof: numberf1,
-		pesoi: numberf2,
+		pesof: numberf2,
+		pesoi: numberf1,
 		porcent:result
 	}];
 	res.json(data);
@@ -173,25 +178,34 @@ app.post("/updatetable", function(req, res) {
 	let stats2;
 	let numberf1;
 	let numberf2;
-
+	console.log(jsonimgs[0].imagen);
 	numberimg=jsonimgs[0].imagen.length;
 	for(i=0;i<numberimg;i++){
 		let imagen=jsonimgs[0].imagen[i];
-		ruta1='./uploadsresized/' + imagen.nombre;
+		ruta1='./uploads/' + imagen.nombre;
 		if(fs.existsSync(ruta1)){
 			stats1 = fs.statSync(ruta1);
+			console.log("***STATS****");
+			console.log(stats1);
 			numbersize1=stats1.size;
 			numberf1=numbersize1;
+			console.log("***STATS****");
+			ruta2='./uploadsresized/' + imagen.nombre;
+			if(fs.existsSync(ruta2)){
+				stats2 = fs.statSync(ruta2);
+				numbersize2=stats2.size;
+				numberf2=numbersize2;
+			}
+			else{
+				console.log("La Ruta no Existe");
+			}
 		}
-		ruta2='./uploads/' + imagen.nombre;
-		if(fs.existsSync(ruta2)){
-			stats2 = fs.statSync(ruta2);
-			numbersize2=stats2.size;
-			numberf2=numbersize2;
-		}
-		jsonimgs[0].imagen[i].pesoo=numbersize2;
-		jsonimgs[0].imagen[i].pesof=numbersize1;
-		jsonimgs[0].imagen[i].porcent=100 - Number(parseFloat((numbersize1*100)/numbersize2));
+		else{
+			console.log("La Ruta no Existe");
+		}		
+		jsonimgs[0].imagen[i].pesoo=numbersize1;
+		jsonimgs[0].imagen[i].pesof=numbersize2;
+		jsonimgs[0].imagen[i].porcent=100 - Number(parseFloat((numbersize2*100)/numbersize1));
 		/*JPEG no muestra un porcentaje de compresión del 50% según lo ajustado sino un numero arbitrario */
 		console.log(jsonimgs[0].imagen[i]);
 	}
@@ -240,7 +254,7 @@ app.post("/zipimages", function(req, res) {
 	let datos=req.body;
 	let jsonimgs=JSON.parse(datos.imagenes);
 	let numberimg;
-	let uuid_=uuidv4();
+	let uuid_=uuidv4.uuid();
 	let imagen;
 	let ruta;
 	var zip = new Zip();

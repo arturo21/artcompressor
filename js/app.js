@@ -142,27 +142,7 @@
 				};
 				jsonarr[0].imagen.push(aux);
 				indice++;
-				localStorage.setItem("indice",indice);
-				localStorage.setItem("imagenes",JSON.stringify(jsonarr));
-				z=localStorage.getItem("imagenes");
-				incimg=localStorage.getItem("indice");
-				axios.post('http://localhost:3000/updatetable', {
-					imagenes: JSON.stringify(jsonarr)
-				})
-				.then(function (response) {
-					rescomp=response.data;
-					localStorage.setItem("imagenes",JSON.stringify(rescomp));
-					try{
-						stringtab=dibujarTabla(JSON.stringify(rescomp));
-						g("#cuerpotabla").html(stringtab);
-					}
-					catch(err){
-						console.log(err);
-					}
-				})
-				.catch(function (error) {
-					console.log(error);
-				});
+				setTimeout(funcdibtab,"3000");
 			}
 		});
 		this.on("error", function(file, errorMessage) {
@@ -178,13 +158,34 @@
 		});
 	  }
 	};
-
+	function funcdibtab(){
+		localStorage.setItem("indice",indice);
+		localStorage.setItem("imagenes",JSON.stringify(jsonarr));
+		z=localStorage.getItem("imagenes");
+		incimg=localStorage.getItem("indice");
+		axios.post('http://localhost:3000/updatetable', {
+			imagenes: JSON.stringify(jsonarr)
+		})
+		.then(function (response) {
+			rescomp=response.data;
+			localStorage.setItem("imagenes",JSON.stringify(rescomp));
+			try{
+				stringtab=dibujarTabla(JSON.stringify(rescomp));
+				g("#cuerpotabla").html(stringtab);
+			}
+			catch(err){
+				console.log(err);
+			}
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+	}
 	//GENERAL.JS CODING
 	//dibujar la tabla con general.js / manejo de DOM. Obtener JSON y vaciarlo en la tabla
 	genrl.docready(function(){
 		if (window.localStorage){
 			agreebit=localStorage.getItem("iagree");
-			console.log(agreebit);
 			if(agreebit!=undefined){
 				if(agreebit!='yes'){
 					g("#cookiescns").show();
@@ -223,11 +224,9 @@
 				console.log(error);
 			});
 		});
-
 		g("#agreebtn").click(function(){
 			if (window.localStorage){
 				agreebit=localStorage.getItem("iagree");
-				console.log(agreebit);
 				if(agreebit!=undefined){
 					localStorage.removeItem("iagree");
 				}
@@ -235,11 +234,9 @@
 				g("#cookiescns").hide();
 			}
 		});
-
 		g("#closecnsbtn").click(function(){
 			if (window.localStorage){
 				agreebit=localStorage.getItem("iagree");
-				console.log(agreebit);
 				if(agreebit!='yes' || agreebit==null || agreebit==undefined){
 					localStorage.setItem("iagree","yes");
 					g("#cookiescns").hide();
